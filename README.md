@@ -11,7 +11,11 @@ The frame is almost all film black and cold moonlight. The castle's glow is the 
 - **Critical notifications** turn into a blood card, and the Brand in the bar starts to bleed (in the manga it bleeds when demons are near).
 - **Lock and boot** show only the Brand, broken like spray paint, in `#A10203` on black, with a plain white field.
 
+![A critical notification: the blood card and the bleeding Brand in the bar](screenshots/critical.webp)
+
 ![Boot](preview-unlock.png)
+
+*The boot screen above is rendered with `omarchy plymouth preview` from the theme's own assets; the two desktop shots are live captures.*
 
 ## Palette
 
