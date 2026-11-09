@@ -47,7 +47,14 @@ omarchy theme install https://github.com/JonathanLauener/omarchy-griffith-castle
 omarchy theme set griffith-castle
 ```
 
-A theme installed from a repo may not ship Lua, so Omarchy regenerates `hyprland.lua` and `neovim.lua` from `colors.toml`. For the exact window chrome and the editor colourscheme, copy those two files (and `nvim/`) into `~/.config/omarchy/themes/griffith-castle/` yourself, and remove the theme's `.git` folder once you no longer need updates.
+Omarchy won't run code from a theme installed this way, so it ignores `hyprland.lua` and `neovim.lua` and generates plain versions from `colors.toml`. You still get the palette, wallpapers, bar and moonlight border, but with stock gaps, shadow and animations, and Neovim gets Omarchy's generic scheme instead of the Griffith one.
+
+For the full version, turn the clone into a local theme. Omarchy then uses the theme's own Lua, but `omarchy theme update` no longer works for it, so to update, install again and repeat this step:
+
+```bash
+rm -rf ~/.config/omarchy/themes/griffith-castle/.git
+omarchy theme set griffith-castle
+```
 
 ### Extras (optional)
 
