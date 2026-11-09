@@ -149,10 +149,10 @@ unselected-border = "#ddd5d2"
 unselected-border-alpha = 0.30
 
 # ---------------------------------------------------------------------------
-# [motif] is not read by the stock shell. The user plugins deep.lock,
-# deep.menu and deep.notifications look for it and fall back to stock
-# behaviour under any theme that does not define it. Paths are relative to
-# the current theme directory.
+# [motif] is not read by the stock shell. The patched plugin clones
+# <user>.lock, <user>.menu and <user>.notifications (extras/install.sh) look
+# for it and fall back to stock behaviour under any theme that does not
+# define it. Paths are relative to the current theme directory.
 [motif]
 lock-background = "#040001"
 lock-image = "motif/lock.png"
