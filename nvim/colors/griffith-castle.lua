@@ -1,9 +1,11 @@
 -- Griffith Castle · Neovim colourscheme
--- Built the way the amber theme does it: the everforest-nvim engine (soft),
--- shown through omarchy's transparency.lua so the terminal's black shows
--- through. The palette is Griffith's own: blood-forward, bone identifiers,
--- one muted cool note for strings.
-pcall(function() require("lazy").load({ plugins = { "everforest-nvim" } }) end)
+-- Built the way the amber theme does it: the everforest-nvim
+-- engine (soft), shown through omarchy's transparency.lua so the
+-- terminal's black shows through. The palette is Griffith's own:
+-- blood-forward, bone identifiers, one cool note for strings.
+pcall(function()
+  require("lazy").load({ plugins = { "everforest-nvim" } })
+end)
 
 local everforest = require("everforest")
 everforest.setup({
@@ -13,7 +15,7 @@ everforest.setup({
     p.red = "#d94f57"         -- keywords: blood
     p.orange = "#e0805f"      -- operators: ember
     p.yellow = "#d9b98a"      -- types: parchment
-    p.green = "#eba0a0"       -- functions: pale rose (most frequent accent)
+    p.green = "#eba0a0"       -- functions: pale rose (main accent)
     p.aqua = "#a9b8a3"        -- strings: muted sage, the one cool note
     p.blue = "#b9a0ab"        -- fields: dusty rose-grey (the haze)
     p.purple = "#c890be"      -- numbers/constants: haze magenta
