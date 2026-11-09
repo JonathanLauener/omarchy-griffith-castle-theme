@@ -1,0 +1,41 @@
+# Griffith Castle — Berserk (1997), ep. 24.
+# The dream is cold (moonlight chrome, amber-style). The price is blood
+# (terminal, editor, alerts, lock and boot). Reds sampled from the Brand.
+mode = "dark"
+
+accent = "#d94f57"
+selection = "#551b24"
+selection_background = "#551b24"
+selection_foreground = "#eee8e6"
+muted = "#6e6466"
+
+background = "#0a0b0e"
+dark_background = "#07080a"
+darker_background = "#050607"
+lighter_background = "#14161c"
+
+foreground = "#ddd5d2"
+dark_foreground = "#6e6466"
+light_foreground = "#ddd5d2"
+bright_foreground = "#eee8e6"
+
+hyprland_active_border = "rgba(eef2f9ee) rgba(a2b0ceee)"
+hyprland_inactive_border = "rgba(a2b0ce66)"
+active_border_color = "#eef2f9"
+active_tab_background = "#a2b0ce"
+
+red = "#c8161d"
+green = "#8a9a86"
+yellow = "#d9b98a"
+blue = "#8d7f9c"
+magenta = "#b06a92"
+cyan = "#9aa59f"
+orange = "#e0805f"
+brown = "#4a3036"
+
+bright_red = "#e5383b"
+bright_green = "#a9b8a3"
+bright_yellow = "#e6cc9f"
+bright_blue = "#a99bb8"
+bright_magenta = "#c890be"
+bright_cyan = "#b5c0ba"

@@ -1,0 +1,106 @@
+--- a/lock/LockView.qml
++++ b/lock/LockView.qml
+@@ -19,9 +19,24 @@
+   property bool syncingPasswordText: false
+ 
+   readonly property string placeholderText: "Enter Password"
+-  readonly property int fieldWidth: 381
+-  readonly property int fieldHeight: 67
+-  readonly property int outlineThickness: 3
++
++  // motif:begin — a theme can replace the blurred wallpaper with a single
++  // image on a flat colour via a [motif] section in its shell.toml (see the
++  // griffith-castle theme). Without one, everything below stays stock.
++  // Positions are on a 1536x864 design canvas and scale with the screen.
++  readonly property string motifImage: Commons.Color.pick("motif.lock-image", "")
++  readonly property bool motifActive: motifImage.length > 0
++  readonly property color motifBackground: Commons.Color.flatColor(Commons.Color.pick("motif.lock-background", "#000000"), "#000000")
++  readonly property real motifScale: height > 0 ? height / 864 : 1
++  readonly property real motifImageHeight: Number(Commons.Color.pick("motif.lock-image-height", "360")) * motifScale
++  readonly property real motifCenterY: Number(Commons.Color.pick("motif.lock-image-center-y", "318")) * motifScale
++  readonly property real motifFieldTop: Number(Commons.Color.pick("motif.lock-field-top", "584")) * motifScale
++  readonly property color motifGlow: Commons.Color.flatColor(Commons.Color.pick("motif.critical-glow", "#a10203"), "#a10203")
++  // motif:end
++
++  readonly property int fieldWidth: motifActive ? Number(Commons.Color.pick("motif.lock-field-width", "300")) : 381
++  readonly property int fieldHeight: motifActive ? Number(Commons.Color.pick("motif.lock-field-height", "42")) : 67
++  readonly property int outlineThickness: motifActive ? Number(Commons.Color.pick("lock.border-width", "2")) : 3
+   readonly property int fieldFontSize: Math.round(Style.font.heading * 1.125)
+   readonly property int passwordDotFontSize: Math.round(Style.font.heading * 1.33)
+   readonly property int passwordDotLetterSpacing: Math.round(Style.font.heading * 0.19)
+@@ -89,12 +104,12 @@
+ 
+   Rectangle {
+     anchors.fill: parent
+-    color: Commons.Color.background
++    color: root.motifActive ? root.motifBackground : Commons.Color.background
+ 
+     Image {
+       id: wallpaper
+       anchors.fill: parent
+-      source: root.loadBackground ? root.fileUrl(root.backgroundPath) : ""
++      source: root.loadBackground && !root.motifActive ? root.fileUrl(root.backgroundPath) : ""
+       fillMode: Image.PreserveAspectCrop
+       asynchronous: true
+       cache: false
+@@ -106,6 +121,7 @@
+       anchors.fill: wallpaper
+       source: wallpaper
+       autoPaddingEnabled: false
++      visible: !root.motifActive
+       blurEnabled: root.loadBackground && wallpaper.status === Image.Ready
+       blur: 1.0
+       blurMax: 128
+@@ -113,6 +129,36 @@
+       contrast: -0.08
+     }
+ 
++    // motif:begin — the theme's mark (griffith-castle: the Brand), with a faint
++    // glow that deepens while a wrong password is on screen.
++    Image {
++      id: motifMark
++      visible: false
++      source: root.motifActive ? "file://" + Commons.Color.currentThemePath + "/" + root.motifImage + "?v=" + root.backgroundVersion : ""
++      height: root.motifImageHeight
++      width: implicitHeight > 0 ? Math.round(height * implicitWidth / implicitHeight) : 0
++      anchors.horizontalCenter: parent.horizontalCenter
++      y: Math.round(root.motifCenterY - height / 2)
++      fillMode: Image.PreserveAspectFit
++      asynchronous: true
++      cache: false
++      smooth: true
++      mipmap: true
++    }
++
++    MultiEffect {
++      anchors.fill: motifMark
++      source: motifMark
++      visible: root.motifActive && motifMark.status === Image.Ready
++      shadowEnabled: true
++      shadowColor: Qt.rgba(root.motifGlow.r, root.motifGlow.g, root.motifGlow.b, root.errorState ? 0.7 : 0.3)
++      shadowBlur: root.errorState ? 1.0 : 0.55
++      shadowHorizontalOffset: 0
++      shadowVerticalOffset: 0
++      Behavior on shadowBlur { NumberAnimation { duration: 260; easing.type: Easing.OutCubic } }
++    }
++    // motif:end
++
+     MouseArea {
+       anchors.fill: parent
+       hoverEnabled: true
+@@ -120,11 +166,14 @@
+       onPositionChanged: root.wakeRequested()
+     }
+ 
++
+     BorderSurface {
+       id: inputField
+       width: root.fieldWidth
+       height: root.fieldHeight
+-      anchors.centerIn: parent
++      anchors.centerIn: root.motifActive ? undefined : parent
++      x: root.motifActive ? Math.round((parent.width - width) / 2) : 0
++      y: root.motifActive ? Math.round(root.motifFieldTop) : 0
+       color: Commons.Color.lock.background
+       borderSpec: root.inputBorderSpec
+       radius: Style.cornerRadius

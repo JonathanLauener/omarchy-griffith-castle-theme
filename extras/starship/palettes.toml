@@ -1,0 +1,34 @@
+# Starship palettes for Griffith Castle.
+#
+# Merge this into ~/.config/starship.toml. The theme-motif hook switches the
+# `palette = "..."` line to [palettes.<theme>] when one exists and back to
+# "default" otherwise, so other themes keep their usual prompt.
+#
+# 1. near the top of starship.toml:
+palette = "default"
+
+# 2. the palettes (put your previous colours into "default"):
+[palettes.default]
+accent = "cyan"
+path = "cyan"
+prompt = "cyan"
+
+[palettes.griffith-castle]
+accent = "#d94f57"
+path = "#d6454b"
+prompt = "#c8161d"
+
+# 3. reference the palette names in your modules, for example:
+[character]
+error_symbol = "[✗](bold prompt)"
+success_symbol = "[❯](bold prompt)"
+
+[directory]
+style = "bold path"
+repo_root_style = "bold accent"
+
+[git_branch]
+style = "italic accent"
+
+[git_status]
+style = "accent"

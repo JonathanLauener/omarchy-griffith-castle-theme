@@ -1,0 +1,174 @@
+# Griffith Castle · Omarchy shell surfaces.
+# Laid out like the amber theme: near-black cards, 1px gradient borders, mono
+# type. The chrome is moonlight; selection, alerts and focus states bleed.
+
+[bar]
+background = "#0a0b0d"
+background-alpha = 1.0
+text = "#eef2f9"
+active = "#e5383b"
+scale-with-font = true
+size-horizontal = 26
+size-vertical = 28
+
+[hyprland]
+active-border = "rgba(eef2f9ee) rgba(a2b0ceee) 45deg"
+active-border-foreground = "#eef2f9"
+
+[controls]
+normal-color = "#ddd5d2"
+normal-fill-alpha = 0.04
+normal-border-width = 1
+normal-border-alpha = 0.28
+
+hover-cursor-color = "#a2b0ce"
+hover-cursor-fill-alpha = 0.10
+hover-cursor-border-width = 1
+hover-cursor-border-alpha = 0.46
+
+focus-color = "#d94f57"
+focus-fill-alpha = 0.12
+focus-border-width = 1
+focus-border-alpha = 0.80
+
+selected-color = "#d94f57"
+selected-fill-alpha = 0.16
+selected-border-width = 1
+selected-border-alpha = 0.56
+
+pressed-color = "#d94f57"
+pressed-fill-alpha = 0.24
+selection-color = "#551b24"
+selection-fill-alpha = 0.60
+
+[spacing]
+scale = 1.0
+scale-with-font = true
+xs = 2
+md = 4
+control-padding-y = 5
+panel-padding = 10
+
+[font]
+base-size = 12
+heading = 16
+icon-large = 18
+
+[popups]
+background = "#0a0b0d"
+background-alpha = 0.97
+text = "#ddd5d2"
+border = "#d4dcec #7d849c 90deg"
+border-alpha = 1.0
+border-width = 1
+
+[tooltip]
+background = "#0a0b0d"
+background-alpha = 0.97
+text = "#ddd5d2"
+border = "#3a3f52"
+border-alpha = 1.0
+border-width = 1
+
+[notifications]
+background = "#0a0b0d"
+background-alpha = 0.97
+text = "#ddd5d2"
+border = "#d4dcec #7d849c 90deg"
+border-alpha = 1.0
+border-width = 1
+countdown = "#7d849c"
+
+[launcher]
+background = "#0a0b0d"
+background-alpha = 0.98
+text = "#ddd5d2"
+border = "#d4dcec #7d849c 90deg"
+border-alpha = 1.0
+border-width = 1
+scrim = "#0a0b0d"
+scrim-alpha = 0.0
+selected-background = "#551b24"
+selected-background-alpha = 0.60
+selected-text = "#eee8e6"
+selected-border = "#c8161d"
+selected-border-alpha = 0.0
+selected-border-width = 0
+
+[menu]
+background = "#0a0b0d"
+background-alpha = 0.98
+text = "#ddd5d2"
+border = "#d4dcec #7d849c 90deg"
+border-alpha = 1.0
+border-width = 1
+scrim = "#0a0b0d"
+scrim-alpha = 0.0
+selected-background = "#551b24"
+selected-background-alpha = 0.60
+selected-text = "#eee8e6"
+selected-border = "#c8161d"
+selected-border-alpha = 0.0
+selected-border-width = 0
+
+[polkit]
+background = "#0a0b0d"
+background-alpha = 0.97
+text = "#ddd5d2"
+text-error = "#e5383b"
+border = "hyprland.active-border"
+border-error = "#e5383b"
+border-alpha = 1.0
+border-width = 1
+scrim = "#0a0b0d"
+scrim-alpha = 0.5
+accent = "#d94f57"
+
+# Lock: the field is plain white on the Eclipse screen (see [motif]).
+[lock]
+background = "#040001"
+background-alpha = 0.6
+text = "#ffffff"
+placeholder = "#ffffff8c"
+text-error = "#ffffff"
+border = "#ffffff"
+border-active = "#ffffff"
+border-error = "#e5383b"
+border-alpha = 1.0
+border-width = 2
+selection = "#a10203"
+selection-alpha = 0.6
+
+[image-picker]
+scrim = "#0a0b0d"
+scrim-alpha = 0.5
+text = "#ddd5d2"
+selected-border = "#a2b0ce"
+selected-border-alpha = 1.0
+unselected-border = "#ddd5d2"
+unselected-border-alpha = 0.30
+
+# ---------------------------------------------------------------------------
+# [motif] is not read by the stock shell. The user plugins deep.lock,
+# deep.menu and deep.notifications look for it and fall back to stock
+# behaviour under any theme that does not define it. Paths are relative to
+# the current theme directory.
+[motif]
+lock-background = "#040001"
+lock-image = "motif/lock.png"
+lock-image-height = 360
+lock-image-center-y = 318
+lock-field-top = 584
+lock-field-width = 300
+lock-field-height = 42
+bar-icon = "motif/brand-white.png"
+bar-icon-alert = "motif/brand-red.png"
+alert-glow = "#c8161d"
+critical-background = "#2a0205"
+critical-background-alpha = 0.97
+critical-border = "#c8161d"
+critical-border-width = 2
+critical-text = "#eee8e6"
+critical-body = "#e8b4b4"
+critical-icon = "motif/brand-red.png"
+critical-glow = "#a10203"

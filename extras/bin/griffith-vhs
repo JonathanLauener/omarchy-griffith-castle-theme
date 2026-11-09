@@ -1,0 +1,15 @@
+#!/bin/bash
+# Toggle the current theme's vhs.frag screen shader (griffith-castle ships one).
+# Hyprland's Lua config needs `hyprctl eval`; a theme switch reloads Hyprland,
+# which turns the shader off again.
+shader="$HOME/.local/state/omarchy/current/theme/vhs.frag"
+current=$(hyprctl getoption decoration:screen_shader | sed -n 's/^str: *//p')
+if [[ -n $current && $current != "[[EMPTY]]" ]]; then
+  hyprctl eval 'hl.config({ decoration = { screen_shader = "" } })' >/dev/null
+  omarchy-notification-send -g "󰕧" "VHS aus" -t 1500 2>/dev/null
+elif [[ -f $shader ]]; then
+  hyprctl eval "hl.config({ decoration = { screen_shader = \"$shader\" } })" >/dev/null
+  omarchy-notification-send -g "󰕧" "VHS an · 1997" -t 1500 2>/dev/null
+else
+  omarchy-notification-send -g "󰕧" "Dieses Theme hat keinen VHS-Shader" -t 2000 2>/dev/null
+fi

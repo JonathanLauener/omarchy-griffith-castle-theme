@@ -1,0 +1,98 @@
+--- a/menu/BarWidget.qml
++++ b/menu/BarWidget.qml
+@@ -1,24 +1,94 @@
+ import QtQuick
++import QtQuick.Effects
++import Quickshell
++import Quickshell.Io
++import qs.Commons
++import qs.Commons as Commons
+ import qs.Ui
+ 
++// Clone of omarchy.menu's bar button. When the current theme's shell.toml has
++// a [motif] section with bar-icon (griffith-castle: the Brand of Sacrifice),
++// the omarchy glyph is replaced by that image. While a critical notification
++// is on screen the button swaps to bar-icon-alert and glows — the Brand bleeds
++// when something is wrong. Any theme without [motif] gets the stock glyph.
+ BarWidget {
+   id: root
+   moduleName: "omarchy.menu"
+ 
++  readonly property string motifIcon: Commons.Color.pick("motif.bar-icon", "")
++  readonly property string motifAlertIcon: Commons.Color.pick("motif.bar-icon-alert", motifIcon)
++  readonly property bool motifActive: motifIcon.length > 0
++  readonly property color alertGlow: Commons.Color.flatColor(Commons.Color.pick("motif.alert-glow", "#c8161d"), "#c8161d")
++  property bool alerting: false
++  // Bumped on every theme apply so the image reloads from the swapped theme dir.
++  property int themeVersion: 0
++
+   implicitWidth: button.implicitWidth
+   implicitHeight: button.implicitHeight
+ 
++  function themeFile(rel) {
++    return rel ? "file://" + Commons.Color.currentThemePath + "/" + rel + "?v=" + themeVersion : ""
++  }
++
++  Connections {
++    target: Commons.Color
++    function onShellValuesChanged() { root.themeVersion++ }
++  }
++
++  // Critical popups are mirrored to one-line JSON files while on screen
++  // (omarchy.notifications persistence), so a cheap grep tells us if one is up.
++  Process {
++    id: criticalProbe
++    command: ["sh", "-c", "grep -lqs '\"urgency\":2' \"$HOME\"/.local/state/omarchy/notifications/*.json"]
++    onExited: function(exitCode) { root.alerting = exitCode === 0 }
++  }
++
++  Timer {
++    interval: 1500
++    repeat: true
++    running: root.motifActive
++    triggeredOnStart: true
++    onTriggered: if (!criticalProbe.running) criticalProbe.running = true
++    onRunningChanged: if (!running) root.alerting = false
++  }
++
+   WidgetButton {
+     id: button
+     anchors.fill: parent
+     bar: root.bar
+-    text: "\ue900"
++    text: ""
+     fontFamily: "omarchy"
+     horizontalMargin: 7.5
++    labelVisible: !root.motifActive || brandIcon.status !== Image.Ready
+     onPressed: function(button) {
+       if (!root.bar) return
+       if (button === Qt.RightButton) root.bar.run("xdg-terminal-exec")
+       else root.bar.run("omarchy-shell shell toggle omarchy.menu '{\"menu\":\"root\"}'")
+     }
++
++    Image {
++      id: brandIcon
++      visible: false
++      anchors.centerIn: parent
++      height: Math.round(parent.height * 0.62)
++      width: implicitHeight > 0 ? Math.round(height * implicitWidth / implicitHeight) : 0
++      source: root.motifActive ? root.themeFile(root.alerting ? root.motifAlertIcon : root.motifIcon) : ""
++      sourceSize.height: height * 2
++      fillMode: Image.PreserveAspectFit
++      smooth: true
++      mipmap: true
++      cache: false
++    }
++
++    MultiEffect {
++      anchors.fill: brandIcon
++      source: brandIcon
++      visible: root.motifActive && brandIcon.status === Image.Ready
++      shadowEnabled: root.alerting
++      shadowColor: root.alertGlow
++      shadowBlur: 0.6
++      shadowHorizontalOffset: 0
++      shadowVerticalOffset: 0
++    }
+   }
+ }

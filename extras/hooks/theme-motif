@@ -1,0 +1,54 @@
+#!/bin/bash
+# theme-motif — theme-set hook. Wires up the optional extras a theme can ship,
+# and puts everything back to stock for themes that ship none of them:
+#   nvim/colors/*.lua   → linked into ~/.config/nvim/colors/
+#   fastfetch-logo.txt  → ~/.config/fastfetch/config.jsonc (stock layout, theme logo, red keys)
+#   [palettes.<theme>]  → in ~/.config/starship.toml becomes the active palette
+# Written for the griffith-castle theme; safe for every other theme.
+
+THEME_NAME=$1
+THEME_DIR="$HOME/.local/state/omarchy/current/theme"
+USER_THEME_DIR="$HOME/.config/omarchy/themes/$THEME_NAME"
+MARK="theme-motif:generated"
+
+# --- nvim colourschemes ------------------------------------------------------
+NVIM_COLORS="$HOME/.config/nvim/colors"
+mkdir -p "$NVIM_COLORS"
+for link in "$NVIM_COLORS"/*.lua; do
+  [[ -L $link ]] || continue
+  [[ $(readlink "$link") == "$HOME/.config/omarchy/themes/"* ]] && rm -f "$link"
+done
+if [[ -d $USER_THEME_DIR/nvim/colors ]]; then
+  for scheme in "$USER_THEME_DIR"/nvim/colors/*.lua; do
+    [[ -f $scheme ]] && ln -sfn "$scheme" "$NVIM_COLORS/$(basename "$scheme")"
+  done
+fi
+
+# --- fastfetch ---------------------------------------------------------------
+FF_CONFIG="$HOME/.config/fastfetch/config.jsonc"
+if [[ -f $THEME_DIR/fastfetch-logo.txt && -f /etc/fastfetch/config.jsonc ]]; then
+  if [[ ! -f $FF_CONFIG ]] || grep -q "$MARK" "$FF_CONFIG"; then
+    mkdir -p "$(dirname "$FF_CONFIG")"
+    {
+      echo "// $MARK by ~/.config/omarchy/hooks/theme-set.d/theme-motif — removed again for themes without a logo"
+      sed -e "s|\"source\": \"~/.config/omarchy/branding/about.txt\"|\"source\": \"$THEME_DIR/fastfetch-logo.txt\"|" \
+          -e 's|"color": { "1": "green" }|"color": { "1": "red" }|' \
+          -e 's|"keyColor": "green"|"keyColor": "red"|g' \
+          /etc/fastfetch/config.jsonc
+    } >"$FF_CONFIG"
+  fi
+elif [[ -f $FF_CONFIG ]] && grep -q "$MARK" "$FF_CONFIG"; then
+  rm -f "$FF_CONFIG"
+fi
+
+# --- starship palette ----------------------------------------------------------
+STARSHIP="$HOME/.config/starship.toml"
+if [[ -f $STARSHIP ]] && grep -q '^palette = ' "$STARSHIP"; then
+  if grep -q "^\[palettes\.$THEME_NAME\]" "$STARSHIP"; then
+    sed -i "s|^palette = .*|palette = \"$THEME_NAME\"|" "$STARSHIP"
+  else
+    sed -i 's|^palette = .*|palette = "default"|' "$STARSHIP"
+  fi
+fi
+
+exit 0

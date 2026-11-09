@@ -1,0 +1,55 @@
+--- a/notifications/components/NotificationCard.qml
++++ b/notifications/components/NotificationCard.qml
+@@ -37,7 +37,19 @@
+   signal cardClicked()
+   // Prefer per-notification media/avatar data, then fall back to the app icon.
+   // The `check` flag avoids Qt's missing-texture placeholder for unknown names.
+-  readonly property string smallIconSource: image.length > 0 ? image : iconSource(appIcon)
++  // motif:begin — critical toasts take the theme's Eclipse styling when its
++  // shell.toml has a [motif] section (griffith-castle: blood card, red border,
++  // the Brand as icon). Without one, critical cards stay stock.
++  readonly property bool motifCritical: urgency === 2 && Commons.Color.pick("motif.critical-background", "").length > 0
++  readonly property color motifBackground: Util.alpha(Commons.Color.flatColor(Commons.Color.pick("motif.critical-background", "#2a0205"), "#2a0205"), Commons.Color.pickAlpha("motif.critical-background-alpha", 0.97))
++  readonly property color motifText: Commons.Color.flatColor(Commons.Color.pick("motif.critical-text", "#ffffff"), "#ffffff")
++  readonly property color motifBody: Commons.Color.flatColor(Commons.Color.pick("motif.critical-body", "#e8b4b4"), "#e8b4b4")
++  readonly property string motifIcon: Commons.Color.pick("motif.critical-icon", "")
++  readonly property string motifIconSource: motifIcon.length > 0 ? "file://" + Commons.Color.currentThemePath + "/" + motifIcon : ""
++  readonly property color summaryColor: motifCritical ? motifText : Commons.Color.notifications.text
++  // motif:end
++
++  readonly property string smallIconSource: motifCritical && motifIconSource.length > 0 ? motifIconSource : (image.length > 0 ? image : iconSource(appIcon))
+   readonly property bool hasGlyph: glyph.length > 0
+   readonly property bool compactGlyph: NotificationLogic.shouldRenderCompactGlyph(glyph, smallIconSource, singleLineToast)
+   readonly property bool hasSmallIcon: smallIconSource.length > 0
+@@ -48,9 +60,11 @@
+   readonly property string styledBody: NotificationLogic.styledBody(body, app, appIcon)
+ 
+   readonly property color dimColor: Qt.darker(Commons.Color.notifications.text, 1.4)
+-  readonly property color bodyColor: Qt.darker(Commons.Color.notifications.text, 1.15)
++  readonly property color bodyColor: motifCritical ? motifBody : Qt.darker(Commons.Color.notifications.text, 1.15)
+   readonly property color accentColor: urgency === 2 ? Commons.Color.urgent : (urgency === 0 ? dimColor : Commons.Color.notifications.countdown)
+-  readonly property var cardBorderSpec: Border.surfaceSpec("notifications", "border", Commons.Color.notifications.border, Math.max(1, Style.space(2)))
++  readonly property var cardBorderSpec: motifCritical
++    ? Border.surfaceSpec("motif", "critical-border", Commons.Color.urgent, Math.max(2, Style.space(2)))
++    : Border.surfaceSpec("notifications", "border", Commons.Color.notifications.border, Math.max(1, Style.space(2)))
+ 
+   function sanitizeBody(s) {
+     return NotificationLogic.sanitizeBody(s, app, appIcon)
+@@ -69,7 +83,7 @@
+   // doesn't push content under the bottom edge.
+   implicitHeight: mainColumn.implicitHeight + borderTop + borderBottom
+   radius: cornerRadius
+-  color: Commons.Color.notifications.background
++  color: motifCritical ? motifBackground : Commons.Color.notifications.background
+   borderSpec: cardBorderSpec
+   clip: true
+ 
+@@ -169,7 +183,7 @@
+           visible: root.summary.length > 0
+           text: root.summary
+           font.family: "Liberation Sans"
+-          color: Commons.Color.notifications.text
++          color: root.summaryColor
+           font.pixelSize: Style.font.title
+           font.bold: true
+           wrapMode: Text.WordWrap
